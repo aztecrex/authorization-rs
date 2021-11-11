@@ -19,7 +19,18 @@ pub trait Query {
     ) -> Result<Vec<((Self::Resource, Self::Action), Effect)>, Self::Err>;
 }
 
-impl<T> Query for T {
+pub trait Authorization {
+    type PId;
+    type Err;
+    type Resource;
+    type Action;
+
+    fn authorize<I>(&self, principal: &Principal<Self::PId>, permissions: I) -> ()
+    where
+        I: IntoIterator<Item = (Self::Resource, Self::Action)>;
+}
+
+impl Query for () {
     type PId = ();
     type Err = ();
     type Resource = ();
